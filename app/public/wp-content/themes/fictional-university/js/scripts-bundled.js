@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,7 +71,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * jQuery JavaScript Library v3.2.1
+ * jQuery JavaScript Library v3.2.0
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -81,7 +81,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2017-03-20T18:59Z
+ * Date: 2017-03-16T21:26Z
  */
 ( function( global, factory ) {
 
@@ -160,7 +160,7 @@ var support = {};
 
 
 var
-	version = "3.2.1",
+	version = "3.2.0",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -5415,9 +5415,11 @@ jQuery.event = {
 		},
 		click: {
 
-			// For checkbox, fire native event so checked state will be right
+			// For checkable types, fire native event so checked state will be right
 			trigger: function() {
-				if ( this.type === "checkbox" && this.click && nodeName( this, "input" ) ) {
+				if ( rcheckableType.test( this.type ) &&
+					this.click && nodeName( this, "input" ) ) {
+
 					this.click();
 					return false;
 				}
@@ -6237,11 +6239,6 @@ var getStyles = function( elem ) {
 
 function curCSS( elem, name, computed ) {
 	var width, minWidth, maxWidth, ret,
-
-		// Support: Firefox 51+
-		// Retrieving style before computed somehow
-		// fixes an issue with getting wrong values
-		// on detached elements
 		style = elem.style;
 
 	computed = computed || getStyles( elem );
@@ -6429,12 +6426,6 @@ function getWidthOrHeight( elem, name, extra ) {
 	// for getComputedStyle silently falls back to the reliable elem.style
 	valueIsBorderBox = isBorderBox &&
 		( support.boxSizingReliable() || val === elem.style[ name ] );
-
-	// Fall back to offsetWidth/Height when value is "auto"
-	// This happens for inline elements with no explicit setting (gh-3571)
-	if ( val === "auto" ) {
-		val = elem[ "offset" + name[ 0 ].toUpperCase() + name.slice( 1 ) ];
-	}
 
 	// Normalize "", auto, and prepare for extra
 	val = parseFloat( val ) || 0;
@@ -10252,16 +10243,16 @@ jQuery.fn.extend( {
 		return arguments.length === 1 ?
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
+	},
+	holdReady: function( hold ) {
+		if ( hold ) {
+			jQuery.readyWait++;
+		} else {
+			jQuery.ready( true );
+		}
 	}
 } );
 
-jQuery.holdReady = function( hold ) {
-	if ( hold ) {
-		jQuery.readyWait++;
-	} else {
-		jQuery.ready( true );
-	}
-};
 jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
 jQuery.nodeName = nodeName;
@@ -10347,6 +10338,130 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var GMap = function () {
+  function GMap() {
+    _classCallCheck(this, GMap);
+
+    var self = this;
+    (0, _jquery2.default)('.acf-map').each(function () {
+      self.new_map((0, _jquery2.default)(this));
+    });
+  } // end constructor
+
+  _createClass(GMap, [{
+    key: 'new_map',
+    value: function new_map($el) {
+
+      // var
+      var $markers = $el.find('.marker');
+
+      // vars
+      var args = {
+        zoom: 16,
+        center: new google.maps.LatLng(0, 0),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+
+      // create map
+      var map = new google.maps.Map($el[0], args);
+
+      // add a markers reference
+      map.markers = [];
+
+      var that = this;
+
+      // add markers
+      $markers.each(function () {
+        that.add_marker((0, _jquery2.default)(this), map);
+      });
+
+      // center map
+      this.center_map(map);
+    } // end new_map
+
+  }, {
+    key: 'add_marker',
+    value: function add_marker($marker, map) {
+
+      // var
+      var latlng = new google.maps.LatLng($marker.attr('data-lat'), $marker.attr('data-lng'));
+
+      var marker = new google.maps.Marker({
+        position: latlng,
+        map: map
+      });
+
+      map.markers.push(marker);
+
+      // if marker contains HTML, add it to an infoWindow
+      if ($marker.html()) {
+        // create info window
+        var infowindow = new google.maps.InfoWindow({
+          content: $marker.html()
+        });
+
+        // show info window when marker is clicked
+        google.maps.event.addListener(marker, 'click', function () {
+
+          infowindow.open(map, marker);
+        });
+      }
+    } // end add_marker
+
+  }, {
+    key: 'center_map',
+    value: function center_map(map) {
+
+      // vars
+      var bounds = new google.maps.LatLngBounds();
+
+      // loop through all markers and create bounds
+      _jquery2.default.each(map.markers, function (i, marker) {
+
+        var latlng = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
+
+        bounds.extend(latlng);
+      });
+
+      // only 1 marker?
+      if (map.markers.length == 1) {
+        // set center of map
+        map.setCenter(bounds.getCenter());
+        map.setZoom(16);
+      } else {
+        // fit to bounds
+        map.fitBounds(bounds);
+      }
+    } // end center_map
+
+  }]);
+
+  return GMap;
+}();
+
+exports.default = GMap;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var HeroSlider = function () {
   function HeroSlider() {
     _classCallCheck(this, HeroSlider);
@@ -10372,7 +10487,114 @@ var HeroSlider = function () {
 exports.default = HeroSlider;
 
 /***/ }),
-/* 2 */
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Like = function () {
+	function Like() {
+		_classCallCheck(this, Like);
+
+		this.events();
+	}
+
+	_createClass(Like, [{
+		key: 'events',
+		value: function events() {
+			(0, _jquery2.default)('.like-box').on("click", this.clickDespatcher.bind(this));
+		}
+
+		// Methods here...
+
+	}, {
+		key: 'clickDespatcher',
+		value: function clickDespatcher(e) {
+			// Make sure we are pointing to the relevant like-box 
+			// This code sets the var equal to closest like-box that was clicked.
+			var currentLikeBox = (0, _jquery2.default)(e.target).closest(".like-box");
+
+			// Always use the attr method to pull in newly loaded attributes
+			if (currentLikeBox.attr("data-exists") == 'yes') {
+				this.removeLike(currentLikeBox);
+			} else {
+				this.createLike(currentLikeBox);
+			}
+		}
+	}, {
+		key: 'createLike',
+		value: function createLike(currentLikeBox) {
+			_jquery2.default.ajax({
+				// Set the nonce for WP to authorize the update.
+				beforeSend: function beforeSend(xhr) {
+					xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+				},
+				url: universityData.root_url + '/wp-json/university/v1/manageLike',
+				type: 'POST',
+				data: { 'professor_id': currentLikeBox.data('prof-id') },
+				success: function success(response) {
+					currentLikeBox.attr('data-exists', 'yes');
+					var likeCount = parseInt(currentLikeBox.find(".like-count").html(), 10);
+					likeCount++;
+					currentLikeBox.find(".like-count").html(likeCount);
+					// Set the data-like attribute with the newly created like ID
+					currentLikeBox.attr("data-like", response);
+					console.log(response);
+				},
+				error: function error(response) {
+					console.log(response);
+				}
+			});
+		}
+	}, {
+		key: 'removeLike',
+		value: function removeLike(currentLikeBox) {
+			_jquery2.default.ajax({
+				// Set the nonce for WP to authorize the update.
+				beforeSend: function beforeSend(xhr) {
+					xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+				},
+				url: universityData.root_url + '/wp-json/university/v1/manageLike',
+				type: 'DELETE',
+				data: { 'like': currentLikeBox.attr('data-like') },
+				success: function success(response) {
+					currentLikeBox.attr('data-exists', 'no');
+					var likeCount = parseInt(currentLikeBox.find(".like-count").html(), 10);
+					likeCount--;
+					currentLikeBox.find(".like-count").html(likeCount);
+					// Clear the data-like attribute for the deleted like ID
+					currentLikeBox.attr("data-like", '');
+					console.log(response);
+				},
+				error: function error(response) {
+					console.log(response);
+				}
+			});
+		}
+	}]);
+
+	return Like;
+}();
+
+exports.default = Like;
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10420,7 +10642,346 @@ var MobileMenu = function () {
 exports.default = MobileMenu;
 
 /***/ }),
-/* 3 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MyNotes = function () {
+	function MyNotes() {
+		_classCallCheck(this, MyNotes);
+
+		this.events();
+	}
+
+	_createClass(MyNotes, [{
+		key: "events",
+		value: function events() {
+			// if you click anywhere within the #my-notes ul, AND it matches the interior element (eg. ".delete-note") then set the callback function
+			(0, _jquery2.default)("#my-notes").on("click", ".delete-note", this.deleteNote);
+			(0, _jquery2.default)("#my-notes").on("click", ".edit-note", this.editNote.bind(this));
+			(0, _jquery2.default)("#my-notes").on("click", ".update-note", this.updateNote.bind(this));
+			(0, _jquery2.default)(".submit-note").on("click", this.createNote.bind(this));
+		}
+
+		// Methods here...
+
+	}, {
+		key: "deleteNote",
+		value: function deleteNote(e) {
+			var this_note = (0, _jquery2.default)(e.target).parents("li");
+			_jquery2.default.ajax({
+				// Set the nonce for WP to authorize the deletion.
+				beforeSend: function beforeSend(xhr) {
+					xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+				},
+				url: universityData.root_url + '/wp-json/wp/v2/note/' + this_note.data('id'),
+				type: 'DELETE',
+				success: function success(response) {
+					// jquery command to delete element from page a slide up in nice fashion...
+					this_note.slideUp();
+					// Remove the note limit message - as we just deleted a note
+					(0, _jquery2.default)(".note-limit-message").removeClass("active");
+					console.log("Delete Note is good!");
+					console.log(response);
+				},
+				error: function error(response) {
+					console.log("Delete Note FAILED!");
+					console.log(response);
+				}
+			});
+		}
+	}, {
+		key: "updateNote",
+		value: function updateNote(e) {
+			var _this = this;
+
+			var this_note = (0, _jquery2.default)(e.target).parents("li");
+			var theUpdatedNote = {
+				'title': this_note.find(".note-title-field").val(),
+				'content': this_note.find(".note-body-field").val()
+			};
+			_jquery2.default.ajax({
+				// Set the nonce for WP to authorize the update.
+				beforeSend: function beforeSend(xhr) {
+					xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+				},
+				url: universityData.root_url + '/wp-json/wp/v2/note/' + this_note.data('id'),
+				type: 'POST',
+				data: theUpdatedNote,
+				success: function success(response) {
+					_this.makeNoteReadOnly(this_note);
+					console.log("Update Note is good!");
+					console.log(response);
+				},
+				error: function error(response) {
+					console.log("Update Note FAILED!");
+					console.log(response);
+				}
+			});
+		}
+	}, {
+		key: "createNote",
+		value: function createNote(e) {
+			var theNewNote = {
+				'title': (0, _jquery2.default)(".new-note-title").val(),
+				'content': (0, _jquery2.default)(".new-note-body").val(),
+				'status': 'publish'
+			};
+			_jquery2.default.ajax({
+				// Set the nonce for WP to authorize the update.
+				beforeSend: function beforeSend(xhr) {
+					xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+				},
+				url: universityData.root_url + '/wp-json/wp/v2/note/',
+				type: 'POST',
+				data: theNewNote,
+				success: function success(response) {
+					// clear the create new note fields
+					(0, _jquery2.default)(".new-note-title, .new-note-body").val('');
+					// For new note Prepend it to the my-notes list elements - hide it first, and then "slide down" note to appear
+					(0, _jquery2.default)("\n\t\t\t\t\t<li data-id=\"" + response.id + "\">\n\t\t\t\t\t\t<input readonly class=\"note-title-field\" type=\"text\" maxlength=\"50\" value=\"" + response.title.raw + "\">\n\t\t\t\t\t\t<span class=\"edit-note\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Edit</span>\n\t\t\t\t\t\t<span class=\"delete-note\"><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i> Delete</span>\n\t\t\t\t\t\t<textarea readonly class=\"note-body-field\" maxlength=\"500\">" + response.content.raw + "</textarea>\n\t\t\t\t\t\t<span class=\"update-note btn btn--blue btn--small\"><i class=\"fa fa-arrow-right\" aria-hidden=\"true\"></i> Save</span>\n\t\t\t\t\t</li>\n\t\t\t\t").prependTo('#my-notes').hide().slideDown();
+					console.log("Create Note is good!");
+					console.log(response);
+				},
+				error: function error(response) {
+					if (response.responseText) {
+						(0, _jquery2.default)(".note-limit-message").html(response.responseText);
+						(0, _jquery2.default)(".note-limit-message").addClass("active");
+					}
+					console.log("Create Note FAILED!");
+					console.log(response);
+				}
+			});
+		}
+	}, {
+		key: "editNote",
+		value: function editNote(e) {
+			var this_note = (0, _jquery2.default)(e.target).parents("li");
+
+			if (this_note.data("state") == "editable") {
+				// switch to readonly (ie. edit)
+				this.makeNoteReadOnly(this_note);
+			} else {
+				// switch to editable (ie. cancel)
+				this.makeNoteEditable(this_note);
+			}
+		}
+	}, {
+		key: "makeNoteEditable",
+		value: function makeNoteEditable(this_note) {
+			// If editing, then change the Edit button to a Cancel button
+			this_note.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i> Cancel');
+			this_note.find(".note-title-field, .note-body-field").removeAttr("readonly").addClass("note-active-field");
+			this_note.find(".update-note").addClass("update-note--visible");
+			this_note.data("state", "editable");
+		}
+	}, {
+		key: "makeNoteReadOnly",
+		value: function makeNoteReadOnly(this_note) {
+			// If canceling, then change the Cancel button to a Edit button
+			this_note.find(".edit-note").html('<i class="fa fa-pencil" aria-hidden="true"></i> Edit');
+			this_note.find(".note-title-field, .note-body-field").attr("readonly", "readonly").removeClass("note-active-field");
+			this_note.find(".update-note").removeClass("update-note--visible");
+			this_note.data("state", "cancel");
+		}
+	}]);
+
+	return MyNotes;
+}();
+
+exports.default = MyNotes;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Search = function () {
+	// 1) Describe and initiate the object
+	function Search() {
+		_classCallCheck(this, Search);
+
+		// append the HTML associated with the Search overlay to the end of the html body
+		this.addSearchHTML();
+
+		this.openButton = (0, _jquery2.default)(".js-search-trigger");
+		this.closeButton = (0, _jquery2.default)(".search-overlay__close");
+		this.searchOverlay = (0, _jquery2.default)(".search-overlay");
+		this.searchField = (0, _jquery2.default)("#search-term");
+		this.searchResults = (0, _jquery2.default)("#search-overlay__results");
+		this.events();
+		this.isSearchOverlayOpen = false;
+		this.isSpinnerVisible = false;
+		this.previousSearchText;
+		this.typingTimer;
+	}
+
+	// 2) Events
+
+
+	_createClass(Search, [{
+		key: "events",
+		value: function events() {
+			this.openButton.on("click", this.openOverlay.bind(this));
+			this.closeButton.on("click", this.closeOverlay.bind(this));
+			(0, _jquery2.default)(document).on("keydown", this.keyPressHandler.bind(this));
+			this.searchField.on("keyup", this.searchText.bind(this));
+		}
+
+		// 3) Methods (function, action...)
+
+	}, {
+		key: "openOverlay",
+		value: function openOverlay() {
+			var _this = this;
+
+			this.searchOverlay.addClass("search-overlay--active");
+			// remove the scrolling of the page when search overlay modal opens
+			(0, _jquery2.default)("body").addClass("body-no-scroll");
+			// Clear the search field of any previous search entry
+			this.searchField.val('');
+			// Set the focus on to the search field after 301 miliseconds (allowing for overlay to load)
+			// Shorthand code here for an anonymous function using ES6 arrow function
+			setTimeout(function () {
+				return _this.searchField.focus();
+			}, 301);
+			this.isSearchOverlayOpen = true;
+			// by returning false this prevents the "a" tag call to the link if js is enabled
+			return false;
+		}
+	}, {
+		key: "closeOverlay",
+		value: function closeOverlay() {
+			this.searchOverlay.removeClass("search-overlay--active");
+			// re-enable the scrolling of the page when search overlay modal is closed
+			(0, _jquery2.default)("body").removeClass("body-no-scroll");
+			this.isSearchOverlayOpen = false;
+		}
+	}, {
+		key: "keyPressHandler",
+		value: function keyPressHandler(e) {
+			// Open the Search window if 's' key is pressed and NOT inside a text input field
+			if (e.keyCode == 83 && !this.isSearchOverlayOpen && !(0, _jquery2.default)("input, textarea").is(':focus')) {
+				this.openOverlay();
+				// Close the search window if ESC key is pressed
+			} else if (e.keyCode == 27 && this.isSearchOverlayOpen) {
+				this.closeOverlay();
+			}
+		}
+	}, {
+		key: "searchText",
+		value: function searchText() {
+			if (this.searchField.val() != this.previousSearchText) {
+				clearTimeout(this.typingTimer);
+				if (this.searchField.val()) {
+					if (!this.isSpinnerVisible) {
+						this.searchResults.html('<div class="spinner-loader"></div>');
+						this.isSpinnerVisible = true;
+					}
+					this.typingTimer = setTimeout(this.getSearchResults.bind(this), 750);
+				} else {
+					this.searchResults.html('');
+					this.isSpinnerVisible = false;
+				}
+			}
+			this.previousSearchText = this.searchField.val();
+		}
+	}, {
+		key: "getSearchResults",
+		value: function getSearchResults() {
+			var _this2 = this;
+
+			// (results) => is equivalent to function(results){}.bind() (ES6 arrow function)
+			_jquery2.default.getJSON(universityData.root_url + '/wp-json/university/v1/search?data=' + this.searchField.val(), function (results) {
+				// Below is using 'template literals' (``) for creating HTML, and anything within ${} is Javascript
+				// Cannot perform "if conditions" inside ${}, but can use ternary operator
+				// It checks if any results (posts) are found and displays the title with a link for each post found, 
+				// otherwise reports no results found
+				_this2.searchResults.html("\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"one-third\">\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">General Information</h2>\n\t\t\t\t\t\t" + (results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No General Results Found.</p>') + "\n\t\t\t\t\t\t\t" + results.generalInfo.map(function (result) {
+					return "<li><a href='" + result.permalink + "'>" + result.title + "</a> " + (result.type == 'post' ? "by " + result.authorName : '') + " </li>";
+				}).join('') + "\n\t\t\t\t\t\t" + (results.generalInfo.length ? '</ul>' : '') + "\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"one-third\">\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">Programs</h2>\n\t\t\t\t\t\t" + (results.programs.length ? '<ul class="link-list min-list">' : "<p>No Programs Found. <a href=\"" + universityData.root_url + "/programs\">View All Programs</a></p>") + "\n\t\t\t\t\t\t\t" + results.programs.map(function (result) {
+					return "<li><a href='" + result.permalink + "'>" + result.title + "</a></li>";
+				}).join('') + "\n\t\t\t\t\t\t" + (results.programs.length ? '</ul>' : '') + "\n\t\t\t\t\t\t\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">Professors</h2>\n\t\t\t\t\t\t" + (results.professors.length ? '<ul class="professor-cards">' : '<p>No Professors Found.</p>') + "\n\t\t\t\t\t\t\t" + results.professors.map(function (result) {
+					return "\n\t\t\t\t\t\t\t\t<li class=\"professor-card__list-item\">\n\t            \t\t\t\t\t<a class=\"professor-card\" href=\"" + result.permalink + "\">\n\t            \t\t\t\t\t\t<img class=\"professor-card__image\" src=\"" + result.image + "\">\n\t            \t\t\t\t\t\t<span class=\"professor-card__name\">" + result.title + "</span>\n\t            \t\t\t\t\t</a>\n\t            \t\t\t\t</li>\n\t\t\t\t\t\t\t";
+				}).join('') + "\n\t\t\t\t\t\t" + (results.professors.length ? '</ul>' : '') + "\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"one-third\">\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">Campuses</h2>\n\t\t\t\t\t\t" + (results.campuses.length ? '<ul class="link-list min-list">' : "<p>No Campuses Found. <a href=\"" + universityData.root_url + "/campuses\">View All Campusess</a></p>") + "\n\t\t\t\t\t\t\t" + results.campuses.map(function (result) {
+					return "<li><a href='" + result.permalink + "'>" + result.title + "</a></li>";
+				}).join('') + "\t\t\t\t\n\t\t\t\t\t\t" + (results.campuses.length ? '</ul>' : '') + "\n\t\t\t\t\t\t\n\t\t\t\t\t\t<h2 class=\"search-overlay__section-title\">Events</h2>\n\t\t\t\t\t\t" + (results.events.length ? '' : "<p>No Events Found. <a href=\"" + universityData.root_url + "/events\">View All Events</a></p>") + "\n\t\t\t\t\t\t\t" + results.events.map(function (result) {
+					return "\n\t\t\t\t\t\t\t\t<div class=\"event-summary\">\n\t\t\t\t\t\t\t\t    <a class=\"event-summary__date t-center\" href=\"" + result.permalink + "\">\n\t\t\t\t\t\t\t\t        <span class=\"event-summary__month\">" + result.month + "</span>\n\t\t\t\t\t\t\t\t        <span class=\"event-summary__day\">" + result.day + "</span>  \n\t\t\t\t\t\t\t\t    </a>\n\t\t\t\t\t\t\t\t    <div class=\"event-summary__content\">\n\t\t\t\t\t\t\t\t        <h5 class=\"event-summary__title headline headline--tiny\"><a href=\"" + result.permalink + "\">" + result.title + "</a></h5>\n\t\t\t\t\t\t\t\t        <p>\n\t\t\t\t\t\t\t\t        \t" + result.excerpt + "\n\t\t\t\t\t\t\t\t            <a href=\"" + result.permalink + "\" class=\"nu gray\"> Learn more</a>\n\t\t\t\t\t\t\t\t        </p>\n\t\t\t\t\t\t\t\t    </div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t";
+				}).join('') + "\t\t\t\t\n\t\t\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t");
+				_this2.isSpinnerVisible = false;
+			});
+
+			// delete this code later
+			/**
+   		$.when(
+   			$.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val()),
+   			$.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.val())
+   			// (posts, pages) => is equivalent to function(posts, pages){}.bind() (ES6 arrow function)
+   			).then((posts, pages) => {
+   			// Element zero(0) of posts and pages contains the JSON data we need
+   			var combinedResults = posts[0].concat(pages[0]);
+   			// Below is using 'template literals' (``) for creating HTML, and anything within ${} is Javascript
+   			// Cannot perform "if conditions" inside ${}, but can use ternary operator
+   			// It checks if any results (posts) are found and displays the title with a link for each post found, 
+   			// otherwise reports no results found
+   			this.searchResults.html(`
+   				<h2 class="search-overlay__section-title">General Information</h2>
+   				${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No Search Results Found.</p>'}
+   					${combinedResults.map(result => `<li><a href='${result.link}'>${result.title.rendered}</a> ${result.type == 'post' ? `by ${result.authorName}` : ''} </li>`).join('')}
+   				${combinedResults.length ? '</ul>' : ''}
+   			`);
+   			this.isSpinnerVisible = false;
+   		}, () => {
+   			this.searchResults.html('<p>Unexpected error occurred. Please try again or contact Administrator.</p>')
+   		});
+   **/
+		}
+	}, {
+		key: "addSearchHTML",
+		value: function addSearchHTML() {
+			(0, _jquery2.default)("body").append("\n\t\t\t<div class=\"search-overlay\">\n\t\t\t  <div class=\"search-overlay__top\">\n\t\t\t    <div class=\"container\">\n\t\t\t      <i class=\"fa fa-search search-overlay__icon\" aria-hidden=\"true\"></i>\n\t\t\t      <input id=\"search-term\" type=\"text\" class=\"search-term\" placeholder=\"Enter your search...\" autofocus=\"true\">\n\t\t\t      <i class=\"fa fa-window-close search-overlay__close\" aria-hidden=\"true\"></i>\n\t\t\t    </div>\n\t\t\t  </div>\n\t\t\t  <div class=\"container\">\n\t\t\t    <div id=\"search-overlay__results\"></div>\n\t\t\t  </div>\n\t\t\t</div>\n\t\t");
+		}
+	}]);
+
+	return Search;
+}();
+
+exports.default = Search;
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -13321,7 +13882,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 4 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13331,17 +13892,33 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _slickCarousel = __webpack_require__(3);
+var _slickCarousel = __webpack_require__(7);
 
 var _slickCarousel2 = _interopRequireDefault(_slickCarousel);
 
-var _MobileMenu = __webpack_require__(2);
+var _MobileMenu = __webpack_require__(4);
 
 var _MobileMenu2 = _interopRequireDefault(_MobileMenu);
 
-var _HeroSlider = __webpack_require__(1);
+var _HeroSlider = __webpack_require__(2);
 
 var _HeroSlider2 = _interopRequireDefault(_HeroSlider);
+
+var _GoogleMap = __webpack_require__(1);
+
+var _GoogleMap2 = _interopRequireDefault(_GoogleMap);
+
+var _Search = __webpack_require__(6);
+
+var _Search2 = _interopRequireDefault(_Search);
+
+var _MyNotes = __webpack_require__(5);
+
+var _MyNotes2 = _interopRequireDefault(_MyNotes);
+
+var _Like = __webpack_require__(3);
+
+var _Like2 = _interopRequireDefault(_Like);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13352,6 +13929,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // 3rd party packages from NPM
 var mobileMenu = new _MobileMenu2.default();
 var heroSlider = new _HeroSlider2.default();
+var googleMap = new _GoogleMap2.default();
+var search = new _Search2.default();
+var mynotes = new _MyNotes2.default();
+var like = new _Like2.default();
 
 /***/ })
 /******/ ]);

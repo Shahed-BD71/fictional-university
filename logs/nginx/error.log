@@ -2,3 +2,6 @@
 2022/02/01 14:57:57 [alert] 7240#7236: the event "ngx_master_7240" was not signaled for 5s
 2022/02/05 15:35:34 [alert] 10772#2800: the event "ngx_master_10772" was not signaled for 5s
 2022/02/05 15:35:44 [alert] 11468#10196: the event "ngx_master_11468" was not signaled for 5s
+2022/02/07 13:54:11 [error] 1508#7980: *226 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: , request: "GET / HTTP/1.0", upstream: "fastcgi://127.0.0.1:10003", host: "fictionaluniversity.local"
+2022/02/07 13:54:14 [error] 1508#7980: *226 connect() failed (10061: No connection could be made because the target machine actively refused it) while connecting to upstream, client: 127.0.0.1, server: , request: "GET / HTTP/1.0", upstream: "fastcgi://127.0.0.1:10002", host: "fictionaluniversity.local"
+2022/02/07 13:59:51 [alert] 12644#6912: the event "ngx_master_12644" was not signaled for 5s

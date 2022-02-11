@@ -1197,3 +1197,38 @@ Stack trace:
 [06-Feb-2022 10:44:34 UTC] PHP Parse error:  syntax error, unexpected end of file in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\single-campus.php on line 90
 [06-Feb-2022 12:28:20 UTC] PHP Parse error:  syntax error, unexpected ',', expecting ')' in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 33
 [06-Feb-2022 12:28:22 UTC] PHP Parse error:  syntax error, unexpected ',', expecting ')' in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 33
+[07-Feb-2022 08:00:07 UTC] PHP Parse error:  syntax error, unexpected ';', expecting ')' in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 32
+[07-Feb-2022 08:00:08 UTC] PHP Parse error:  syntax error, unexpected ';', expecting ')' in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 32
+[07-Feb-2022 08:00:31 UTC] PHP Parse error:  syntax error, unexpected ';', expecting ')' in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 32
+[11-Feb-2022 12:48:54 UTC] PHP Warning:  require(C:\Users\mdsha\Local Sites\amazingcollege\app\public/wp-content/themes/fictional-university/inc/search-route.php): failed to open stream: No such file or directory in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 2
+[11-Feb-2022 12:48:54 UTC] PHP Stack trace:
+[11-Feb-2022 12:48:54 UTC] PHP   1. {main}() C:\Users\mdsha\Local Sites\amazingcollege\app\public\index.php:0
+[11-Feb-2022 12:48:54 UTC] PHP   2. require() C:\Users\mdsha\Local Sites\amazingcollege\app\public\index.php:17
+[11-Feb-2022 12:48:54 UTC] PHP   3. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-blog-header.php:13
+[11-Feb-2022 12:48:54 UTC] PHP   4. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-load.php:50
+[11-Feb-2022 12:48:54 UTC] PHP   5. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-config.php:77
+[11-Feb-2022 12:48:54 UTC] PHP   6. include() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-settings.php:555
+[11-Feb-2022 12:48:54 UTC] PHP Fatal error:  require(): Failed opening required 'C:\Users\mdsha\Local Sites\amazingcollege\app\public/wp-content/themes/fictional-university/inc/search-route.php' (include_path='.:/usr/share/php:/www/wp-content/pear') in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 2
+[11-Feb-2022 12:48:54 UTC] PHP Stack trace:
+[11-Feb-2022 12:48:54 UTC] PHP   1. {main}() C:\Users\mdsha\Local Sites\amazingcollege\app\public\index.php:0
+[11-Feb-2022 12:48:54 UTC] PHP   2. require() C:\Users\mdsha\Local Sites\amazingcollege\app\public\index.php:17
+[11-Feb-2022 12:48:54 UTC] PHP   3. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-blog-header.php:13
+[11-Feb-2022 12:48:54 UTC] PHP   4. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-load.php:50
+[11-Feb-2022 12:48:54 UTC] PHP   5. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-config.php:77
+[11-Feb-2022 12:48:54 UTC] PHP   6. include() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-settings.php:555
+[11-Feb-2022 12:48:55 UTC] PHP Warning:  require(C:\Users\mdsha\Local Sites\amazingcollege\app\public/wp-content/themes/fictional-university/inc/search-route.php): failed to open stream: No such file or directory in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 2
+[11-Feb-2022 12:48:55 UTC] PHP Stack trace:
+[11-Feb-2022 12:48:55 UTC] PHP   1. {main}() C:\Users\mdsha\Local Sites\amazingcollege\app\public\index.php:0
+[11-Feb-2022 12:48:55 UTC] PHP   2. require() C:\Users\mdsha\Local Sites\amazingcollege\app\public\index.php:17
+[11-Feb-2022 12:48:55 UTC] PHP   3. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-blog-header.php:13
+[11-Feb-2022 12:48:55 UTC] PHP   4. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-load.php:50
+[11-Feb-2022 12:48:55 UTC] PHP   5. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-config.php:77
+[11-Feb-2022 12:48:55 UTC] PHP   6. include() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-settings.php:555
+[11-Feb-2022 12:48:55 UTC] PHP Fatal error:  require(): Failed opening required 'C:\Users\mdsha\Local Sites\amazingcollege\app\public/wp-content/themes/fictional-university/inc/search-route.php' (include_path='.:/usr/share/php:/www/wp-content/pear') in C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-content\themes\fictional-university\functions.php on line 2
+[11-Feb-2022 12:48:55 UTC] PHP Stack trace:
+[11-Feb-2022 12:48:55 UTC] PHP   1. {main}() C:\Users\mdsha\Local Sites\amazingcollege\app\public\index.php:0
+[11-Feb-2022 12:48:55 UTC] PHP   2. require() C:\Users\mdsha\Local Sites\amazingcollege\app\public\index.php:17
+[11-Feb-2022 12:48:55 UTC] PHP   3. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-blog-header.php:13
+[11-Feb-2022 12:48:55 UTC] PHP   4. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-load.php:50
+[11-Feb-2022 12:48:55 UTC] PHP   5. require_once() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-config.php:77
+[11-Feb-2022 12:48:55 UTC] PHP   6. include() C:\Users\mdsha\Local Sites\amazingcollege\app\public\wp-settings.php:555
